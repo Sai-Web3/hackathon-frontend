@@ -1,0 +1,2 @@
+@import url(http://fonts.googleapis.com/css?family=Kumbh+Sans|Inter);*{margin:0;padding:0}.container-fluid{padding:0;display:flex;font-family:"Kumbh Sans"}#sidebar{display:none;width:300px;background-color:#f2f2f2;padding:10px;font-family:"Kumbh Sans"}#sidebar.open{display:block}.container{flex:1;max-width:100%;margin:0 auto}.container .content{width:1000px;margin:0 auto;display:block}.btn{font-family:'Inter'}.form-group{margin:20px 0}.nav-link{cursor:pointer}.hide{display:none}
+/*# sourceMappingURL=common.css.map */
