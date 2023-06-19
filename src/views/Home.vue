@@ -1,9 +1,12 @@
 <template>
   <div class="container">
-    <div class="auth-box">
+    <div class="content">
 
-      <div class="text-center mt-5">
-        <button type="button" class="btn btn-lg btn-primary btn-block mb-4" @click="getAccount">Connect Wallet</button>
+      <div class="home_box">
+        <div class="heading">Visualize Your<br/>Skill for New Era</div>
+        <div class="button_box">
+          <div class="connect_button" @click="getAccount">Connect Wallet</div>
+        </div>
       </div>
 
     </div>
@@ -64,7 +67,7 @@ export default {
           console.info(sbt_id)
 
         if(sbt_id == -1) {
-          this.$router.push("/initial/ai");
+          this.$router.push("/initial");
         } else {
           this.$router.push("/mypage");
         }

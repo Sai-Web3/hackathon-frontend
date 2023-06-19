@@ -1,27 +1,25 @@
 <template>
   <div class="content">
+    <div class="mypage_box">
 
-    <h1>This is Your Skill Element</h1>
+      <h1 class="heading">This is Your Skill Element!</h1>
 
-    <div class="form-group">Your SBT ID: {{ sbt_id == -1 ? '': sbt_id }}</div>
+      <div class="text-center">
+        <img src="@/assets/sbt.gif">
+      </div>
 
-    <div>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Skill</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="skill in skills" :key="skill.skill_name">
-            <td>{{ skill.skill_name }}</td>
-            <td>{{ skill.value }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="row mt-5">
+        <div class="col-3">&nbsp;</div>
+        <div class="col-3 px-4">
+          <router-link to="/" class="cancel_button">Cancel</router-link>
+        </div>
+        <div class="col-3 px-4">
+          <router-link :to="{ path: `/sbt/detail/${sbt_id}`}" class="check_button">Check Detail</router-link>        
+        </div>
+        <div class="col-3"></div>
+      </div>
+
     </div>
-
   </div>
 </template>
 
@@ -65,6 +63,10 @@ export default {
         res = await this.apiGetSbtAccount(this.walletAddress);
         this.sbt_id = res.data?.sbt_id;
         this.skills = res.data?.data || "";
+
+        if(this.sbt_id == -1) {
+          this.$router.push("/initial");
+        }
       } catch (error) {
         this.$log.error(error);
         return;

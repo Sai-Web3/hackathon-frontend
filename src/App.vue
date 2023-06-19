@@ -7,8 +7,10 @@
       </div>
     </header>
     <div class="container-fluid">
-      <nav id="sidebar" class="" :class="{ 'open': isOpen }" @toggle="toggleSidebar">
-        <div class="">
+      <nav id="sidebar" class="" :class="{ 'open': isOpen }" @toggle="toggleSidebar" @click="toggleSidebar">
+        <div class="menu">
+          <div class="heading">MENU</div>
+          <div class="close" @click="toggleSidebar"><i class="fa fa-xmark"></i></div>
           <ul class="nav flex-column">
             <li class="nav-item">
               <router-link to="/" class="nav-link" aria-current="page">
@@ -19,19 +21,7 @@
             <li class="nav-item">
               <router-link to="/mypage" class="nav-link" aria-current="page">
                 <span data-feather="home" class="align-text-bottom"></span>
-                Connect Account
-              </router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/sbt/search" class="nav-link" aria-current="page">
-                <span data-feather="home" class="align-text-bottom"></span>
-                Find other SBTs
-              </router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/match/search" class="nav-link" aria-current="page">
-                <span data-feather="home" class="align-text-bottom"></span>
-                Find your matches
+                Mypage
               </router-link>
             </li>
           </ul>

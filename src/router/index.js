@@ -22,6 +22,11 @@ const routes = [
     component: () => import('../views/Template.vue'),
     children: [
       {
+        path: '',
+        name: 'Initial',
+        component: () => import('../views/Initial/Index.vue'),
+      },
+      {
         path: 'ai',
         name: 'InitialAi',
         component: () => import('../views/Initial/Ai.vue'),

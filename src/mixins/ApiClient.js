@@ -74,9 +74,9 @@ export default Vue.mixin({
 
 
     // initial
-    async apiPostAiAnalysis(career, histories, achievement, term) {
+    async apiPostAiAnalysis(career, to) {
       const path = `ai/analysis`;
-      return await this.apiPost(path, {career: career, histories: histories, achievement: achievement, term: term});
+      return await this.apiPost(path, {career: career, to: to});
     },
     async apiPostMintParameter(address) {
       const path = `sbt/mint_parameter`;
