@@ -31,11 +31,6 @@ const routes = [
         name: 'InitialAi',
         component: () => import('../views/Initial/Ai.vue'),
       },
-      {
-        path: 'mint',
-        name: 'InitialMint',
-        component: () => import('../views/Initial/Mint.vue'),
-      },
     ],
   },
 
@@ -80,6 +75,64 @@ const routes = [
         path: 'detail/:sbt_id',
         name: 'MatchDetail',
         component: () => import('../views/Match/Detail.vue'),
+      },
+    ],
+  },
+
+  // looking
+  {
+    path: '/looking',
+    name: '',
+    component: () => import('../views/Template.vue'),
+    children: [
+      {
+        path: 'job',
+        name: '',
+        component: () => import('../views/Template.vue'),
+        children: [
+          {
+            path: '',
+            name: 'LookingJob',
+            component: () => import('../views/Looking/Job/Index.vue'),
+          },
+          {
+            path: 'detail/:job_id',
+            name: 'LookingJobDetail',
+            component: () => import('../views/Looking/Job/Detail.vue'),
+          },
+          {
+            path: 'offer',
+            name: 'LookingJobOffer',
+            component: () => import('../views/Looking/Job/Offer.vue'),
+          },
+        ]
+      },
+      {
+        path: 'buddy',
+        name: '',
+        component: () => import('../views/Template.vue'),
+        children: [
+          {
+            path: 'create',
+            name: 'LookingBuddyCreate',
+            component: () => import('../views/Looking/Buddy/Create.vue'),
+          },
+          {
+            path: 'check/:job_id',
+            name: 'LookingBuddyCheck',
+            component: () => import('../views/Looking/Buddy/Check.vue'),
+          },
+          {
+            path: 'recommend/:job_id',
+            name: 'LookingBuddyRecommend',
+            component: () => import('../views/Looking/Buddy/Recommend.vue'),
+          },
+          {
+            path: 'offer/:job_id',
+            name: 'LookingBuddyOffer',
+            component: () => import('../views/Looking/Buddy/Offer.vue'),
+          },
+        ]
       },
     ],
   },

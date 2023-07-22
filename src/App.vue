@@ -10,7 +10,7 @@
       <nav id="sidebar" class="" :class="{ 'open': isOpen }" @toggle="toggleSidebar" @click="toggleSidebar">
         <div class="menu">
           <div class="heading">MENU</div>
-          <div class="close" @click="toggleSidebar"><i class="fa fa-xmark"></i></div>
+          <div class="close"><i class="fa fa-xmark"></i></div>
           <ul class="nav flex-column">
             <li class="nav-item">
               <router-link to="/" class="nav-link" aria-current="page">
@@ -64,6 +64,7 @@ export default {
     },
     logout() {
       this.$store.commit("setWalletAddress", "");
+      this.$store.commit("setSbtId", -1);
       this.$router.push("/");
     }
   }

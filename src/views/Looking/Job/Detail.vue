@@ -1,9 +1,23 @@
 <template>
   <div class="content">
 
-    <ul>
-      <li v-for="sbt in sbts" :key="sbt.sbt_id"><router-link :to="`/sbt/detail/${sbt.sbt_id}`">SBT ID: {{ sbt.sbt_id }}</router-link></li>
-    </ul>
+    <h1 class="heading">Looking for Jobs</h1>
+
+    <div class="bg-white p-4">
+
+      <div class="" @click="$router.go(-1)" style="cursor: pointer;"><i class="fa-solid fa-arrow-left"></i></div>
+
+      <div class="form-group">
+        <label>Title</label>
+        <div class="">{{job.title ?? ""}}</div>
+      </div>
+
+      <div class="form-group">
+        <label>Job Description</label>
+        <div class="">{{job.input_text ?? ""}}</div>
+      </div>
+
+    </div>
 
   </div>
 </template>
@@ -12,12 +26,13 @@
 // @ is an alias to /src
 
 export default {
-  name: 'Mypage',
+  name: 'LookingJobDetail',
   components: {
   },
   data: () => ({
     walletAddress: null,
-    sbts: [],
+    job_id: -1,
+    job: {},
   }),
   computed: {
   },
@@ -33,7 +48,6 @@ export default {
     await this.initialize();
   },
   methods: {
-
     getAccount: async function() {
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
@@ -42,10 +56,14 @@ export default {
     },
 
     initialize: async function() {
+
+      this.job_id = this.$route.params.job_id;
+
       let res;
       try {
-        res = await this.apiPostSbtSearch("");
-        this.sbts = res.data?.data || [];
+        res = await this.apiGetJobDetail(this.job_id);
+        this.job = res.data?.job || {};
+
       } catch (error) {
         this.$log.error(error);
         return;

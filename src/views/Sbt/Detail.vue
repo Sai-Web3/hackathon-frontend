@@ -16,7 +16,44 @@
       </div>
       <div class="tab-content">
         <div v-for="(tab, index) in tabs" :key="index" v-show="activeTab === index">
-          <div v-if='tab.title == "Soft Skill"'>
+          <div v-if='tab.title == "Top"'>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Best SS</th>
+                  <th>Best HS</th>
+                  <th>Reputation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{soft_skills.length > 0 ? soft_skills[0].skill_name : ""}}</td>
+                  <td>{{hard_skills.length > 0 ? hard_skills[0].skill_name : ""}}</td>
+                  <td rowspan="3" class="text-center border-0">A</td>
+                </tr>
+                <tr>
+                  <td>{{soft_skills.length > 1 ? soft_skills[1].skill_name : ""}}</td>
+                  <td>{{hard_skills.length > 1 ? hard_skills[1].skill_name : ""}}</td>
+                </tr>
+                <tr>
+                  <td>{{soft_skills.length > 2 ? soft_skills[2].skill_name : ""}}</td>
+                  <td>{{hard_skills.length > 2 ? hard_skills[2].skill_name : ""}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="my-3">
+              <label>Name</label>
+              <input type="text" name="" class="form-control" v-model="name" :disabled="$store.state.sbt_id != sbt_id">
+            </div>
+            <div class="my-3">
+              <label>Description</label>
+              <input type="text" name="" class="form-control" v-model="description" :disabled="$store.state.sbt_id != sbt_id">
+            </div>
+            <div class="text-center mt-5">
+              <button class="btn btn-primary" @click="update">Update</button>
+            </div>
+          </div>
+          <div v-else-if='tab.title == "Soft Skill"'>
             <table class="table">
               <thead>
                 <tr>
@@ -138,6 +175,49 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div v-else-if='tab.title == "Matching"'>
+
+            <div class="my-3">
+              <router-link to="/looking/job" class="btn btn-primary me-3">Look for jobs</router-link>
+              <router-link to="/looking/buddy/create" class="btn btn-primary">Look for buddies</router-link>
+            </div>
+
+            <div class="h4 mt-5 mb-2">Your registerd job list</div>
+            <div class="">
+             <div class="row">
+               <div class="col-4" v-for="(register_job, index) in register_jobs" :key="index">
+                  <div class="">
+                    <div class="">{{register_job.title}}</div>
+                    <div class=""><router-link :to="`/looking/job/detail/${register_job.id}`" class="btn btn-primary">Detail</router-link></div>
+                  </div>
+               </div>
+             </div> 
+            </div>
+
+            <div class="h4 mt-5 mb-2">Your applied job list</div>
+            <div class="">
+             <div class="row">
+               <div class="col-4" v-for="(application_job, index) in application_jobs" :key="index">
+                <div class="">
+                  <div class="">{{application_job.title}}</div>
+                    <div class=""><router-link :to="`/looking/job/detail/${application_job.id}`" class="btn btn-primary">Detail</router-link></div>
+                </div>
+               </div>
+             </div> 
+            </div>
+
+            <div class="h4 mt-5 mb-2">Candidate buddies list</div>
+            <div class="">
+             <div class="row">
+               <div class="col-4" v-for="(offer_sbt, index) in offer_sbts" :key="index">
+                  <div class="">
+                    <div class="">SBT ID: {{offer_sbt.sbt_id}}</div>
+                    <div class=""><span @click="link(offer_sbt.sbt_id)" class="btn btn-primary">Detail</span></div>
+                  </div>
+               </div>
+             </div> 
+            </div>
 
           </div>
         </div>
@@ -160,15 +240,22 @@ export default {
     soft_skills: [],
     hard_skills: [],
     tabs: [
+      { title: 'Top',  },
       { title: 'Soft Skill',  },
       { title: 'Hard Skill',  },
       { title: 'Career Detail', },
+      { title: 'Matching',  },
     ],
     activeTab: 0,
     isSoftSkillContentOpen: [],
     isHardSkillContentOpen: [],
     openIcon: '<i class="fa fa-chevron-down"></i>',
     closeIcon: '<i class="fa fa-chevron-up"></i>',
+    register_jobs: [],
+    application_jobs: [],
+    offer_sbts: [],
+    name: "",
+    description: ""
   }),
   computed: {
   },
@@ -208,6 +295,9 @@ export default {
       try {
         res = await this.apiGetSbtDetail(this.sbt_id);
         const skills = res.data?.data || "";
+        this.register_jobs = res.data?.register_jobs || [];
+        this.application_jobs = res.data?.application_jobs || [];
+        this.offer_sbts = res.data?.offer_sbts || [];
 
         for(let index in skills) {
           if(skills[index].skill_type_id == 1) {
@@ -224,6 +314,23 @@ export default {
         return;
       }
     },
+
+    update: async function() {
+
+      let res;
+      try {
+        res = await this.apiPostUserUpdate(this.$store.state.sbt_id, this.name, this.description);
+
+      } catch (error) {
+        this.$log.error(error);
+        return;
+      }
+    },
+
+    link(id) {
+      this.$router.push(`/sbt/detail/${id}`);
+      location.reload();
+    }
 
   },
 }

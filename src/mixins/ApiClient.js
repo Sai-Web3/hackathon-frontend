@@ -74,9 +74,9 @@ export default Vue.mixin({
 
 
     // initial
-    async apiPostAiAnalysis(career, to) {
+    async apiPostAiAnalysis(career, to, is_skip) {
       const path = `ai/analysis`;
-      return await this.apiPost(path, {career: career, to: to});
+      return await this.apiPost(path, {career: career, to: to, is_skip: is_skip});
     },
     async apiPostMintParameter(address) {
       const path = `sbt/mint_parameter`;
@@ -92,11 +92,47 @@ export default Vue.mixin({
       const path = `sbt/detail/`+sbt_id;
       return await this.apiGet(path);
     },
+    async apiGetJob() {
+      const path = `job`;
+      return await this.apiGet(path);
+    },
+    async apiGetJobDetail(job_id) {
+      const path = `job/detail/`+job_id;
+      return await this.apiGet(path);
+    },
+    async apiGetJobCheck(job_id) {
+      const path = `job/check/`+job_id;
+      return await this.apiGet(path);
+    },
 
     // post
     async apiPostSbtSearch(skill_name) {
       const path = `sbt/search`;
       return await this.apiPost(path, {skill_name: skill_name});
+    },
+    async apiPostJob(job_ids) {
+      const path = `job`;
+      return await this.apiPost(path, {job_ids: job_ids});
+    },
+    async apiPostJobCreate(sbt_id, title, input_text) {
+      const path = `job/create`;
+      return await this.apiPost(path, {sbt_id: sbt_id, title: title, input_text: input_text});
+    },
+    async apiPostJobUpdate(job_id, skill_ids) {
+      const path = `job/update/`+job_id;
+      return await this.apiPost(path, {skill_ids: skill_ids});
+    },
+    async apiPostJobOffer(job_id, sbt_ids) {
+      const path = `job/offer`;
+      return await this.apiPost(path, {job_id: job_id, sbt_ids: sbt_ids});
+    },
+    async apiPostJobApplication(sbt_id, job_ids) {
+      const path = `job/application`;
+      return await this.apiPost(path, {sbt_id: sbt_id, job_ids: job_ids});
+    },
+    async apiPostProfileUpdate(sbt_id, name, description) {
+      const path = `sbt/profile/update/`+sbt_id;
+      return await this.apiPost(path, {sbt_id: sbt_id, name: name, description: description});
     },
 
     // common

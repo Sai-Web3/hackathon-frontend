@@ -1,8 +1,12 @@
 <template>
   <div class="content">
 
+    <div class="my-4">
+      <router-link to="/recruit/create" class="btn btn-primary">Create</router-link>
+    </div>
+
     <ul>
-      <li v-for="sbt in sbts" :key="sbt.sbt_id"><router-link :to="`/sbt/detail/${sbt.sbt_id}`">SBT ID: {{ sbt.sbt_id }}</router-link></li>
+      <li v-for="recruit in recruits" :key="recruit.recruit_id"><router-link :to="`/recruit/detail/${recruit.recruit_id}`">Recruit ID: {{ recruit.recruit_id }}</router-link></li>
     </ul>
 
   </div>
@@ -17,7 +21,7 @@ export default {
   },
   data: () => ({
     walletAddress: null,
-    sbts: [],
+    recruits: [],
   }),
   computed: {
   },
@@ -44,8 +48,8 @@ export default {
     initialize: async function() {
       let res;
       try {
-        res = await this.apiPostSbtSearch("");
-        this.sbts = res.data?.data || [];
+        // res = await this.apiGetRecruits();
+        // this.recruits = res.data?.data || [];
       } catch (error) {
         this.$log.error(error);
         return;

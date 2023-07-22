@@ -64,11 +64,11 @@ export default {
       try {
         res = await this.apiGetSbtAccount(accounts[0]);
         const sbt_id = res.data?.sbt_id;
-          console.info(sbt_id)
-
+        
         if(sbt_id == -1) {
           this.$router.push("/initial");
         } else {
+          this.$store.commit("setSbtId", sbt_id);
           this.$router.push("/mypage");
         }
 

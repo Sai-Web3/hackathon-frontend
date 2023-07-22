@@ -30,6 +30,18 @@
 
         <div class="chat_box">
           <div class="chat_ai">
+            Your name
+          </div>
+        </div>
+
+        <div class="chat_box">
+          <div class="input_user">
+            <input type="text" class="form-control" v-model="inputs.name" placeholder="" />
+          </div>
+        </div>
+
+        <div class="chat_box">
+          <div class="chat_ai">
             Please tell me the work period above
           </div>
         </div>
@@ -112,7 +124,14 @@
             <textarea class="form-control" rows="5" v-model="inputs.roll" placeholder="e.g.) CTO, Lead Tech, Manager, Senior, Junior etc..."></textarea>
           </div>
         </div>
+
       </div>
+
+      <div class="form-group text-center">
+        <div>If you are only looking for buddies<br/>you can skip visualizing skill for now.</div>
+        <div class="mint_button d-block" @click="skip">Skip</div>
+      </div>
+
 
       <div class="form-group text-center">
         <div class="mint_button d-block" @click="analysis">Proceed to SBT Generation</div>
@@ -141,6 +160,7 @@ export default {
   data: () => ({
     walletAddress: null,
     inputs: {
+      name: "",
       kind: "",
       reponsibility: '',
       roll: '',
@@ -169,6 +189,7 @@ export default {
   computed: {
     analyzeParams() {
       const analyzeParams = {
+        name: this.inputs.name,
         input_text: "What kind of company was it?:" + "\r\n" + this.inputs.kind + "\r\n\r\n" + "What were your main responsibilities, the goals and accomplishments to be achieved, and the challenges and difficulties you faced in doing so? And how did you deal with those difficulties?:" + "\r\n" + this.inputs.reponsibility + "\r\n\r\n" + "What was your roll in your team?:" + "\r\n" + this.inputs.roll,
         started_at: this.inputs.started_year + "-" + this.inputs.started_month,
         finished_at: this.inputs.finished_year + "-" + this.inputs.finished_month,
@@ -200,7 +221,24 @@ export default {
       let res;
       this.isConfirmation = true;
       try {
-        res = await this.apiPostAiAnalysis(this.analyzeParams, this.walletAddress);
+        res = await this.apiPostAiAnalysis(this.analyzeParams, this.walletAddress, false);
+        if(res.data?.status) {
+          this.mint(res.data.calldata, res.data.sbt_address, res.data.gas_limit, res.data.gas_price);
+        } else {
+          this.isConfirmation = false;
+        }
+      } catch (error) {
+        this.$log.error(error);
+        this.isConfirmation = false;
+        return;
+      }
+    },
+
+    skip: async function() {
+      let res;
+      this.isConfirmation = true;
+      try {
+        res = await this.apiPostAiAnalysis(this.analyzeParams, this.walletAddress, true);
         if(res.data?.status) {
           this.mint(res.data.calldata, res.data.sbt_address, res.data.gas_limit, res.data.gas_price);
         } else {
@@ -223,6 +261,8 @@ export default {
           gasPrice: Web3.utils.toHex(parseInt(gas_price)),
           value: "0x0",
           data: calldata,
+          // maxFeePerGas: Web3.utils.toHex(parseInt(gas_price)), // 追加: 手数料上限の調整
+          // maxPriorityFeePerGas: Web3.utils.toHex(parseInt(gas_price) * 2), // 追加: 手数料上限の調整
         },
       ];
 

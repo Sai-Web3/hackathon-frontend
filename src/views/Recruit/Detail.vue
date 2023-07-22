@@ -1,6 +1,8 @@
 <template>
   <div class="content">
 
+    <h1>Recruit</h1>
+
     <ul>
       <li v-for="sbt in sbts" :key="sbt.sbt_id"><router-link :to="`/sbt/detail/${sbt.sbt_id}`">SBT ID: {{ sbt.sbt_id }}</router-link></li>
     </ul>
@@ -12,7 +14,7 @@
 // @ is an alias to /src
 
 export default {
-  name: 'Mypage',
+  name: 'MatchSearch',
   components: {
   },
   data: () => ({
@@ -42,14 +44,6 @@ export default {
     },
 
     initialize: async function() {
-      let res;
-      try {
-        res = await this.apiPostSbtSearch("");
-        this.sbts = res.data?.data || [];
-      } catch (error) {
-        this.$log.error(error);
-        return;
-      }
     },
 
   },
