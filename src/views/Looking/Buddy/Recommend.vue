@@ -46,7 +46,7 @@
 // @ is an alias to /src
 
 export default {
-  name: 'SbtDetail',
+  name: 'LookingBuddyRecommend',
   components: {
   },
   data: () => ({
@@ -61,7 +61,7 @@ export default {
   },
   async mounted() {
     if (window.ethereum) {
-      this.walletAddress = await this.getAccount()
+      this.walletAddress = await this.$store.dispatch('getAccount');
       if(this.walletAddress != this.$store.state.walletAddress) {
         this.$router.push("/");
       }
@@ -71,20 +71,13 @@ export default {
     await this.initialize();
   },
   methods: {
-    getAccount: async function() {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      return accounts[0];
-    },
 
     initialize: async function() {
 
       this.job_id = this.$route.params.job_id;
 
-      let res;
       try {
-        res = await this.apiGetJobRecommend(this.job_id);
+        const res = await this.apiGetJobRecommend(this.job_id);
         this.recommends = res.data?.recommends || [];
         this.skills = res.data?.skills || {};
         this.profiles = res.data?.profiles || {};
@@ -93,21 +86,12 @@ export default {
 
       } catch (error) {
         this.$log.error(error);
-        return;
       }
     },
 
     offer: async function() {
 
-      let recommends = [];
-
-      for(let i in this.select_sbt_ids) {
-        for(let j in this.recommends) {
-          if(this.select_sbt_ids[i] == this.recommends[j].sbt_id) {
-            recommends.push(this.recommends[j]);
-          }
-        }
-      }
+      const recommends = this.recommends.filter(rec => this.select_sbt_ids.includes(rec.sbt_id));
 
       this.$store.commit("setLookingBuddyRecommends", recommends);
       this.$store.commit("setLookingSbtIds", this.select_sbt_ids);

@@ -1,4 +1,4 @@
-# vue-test
+# Hackathon frontend
 
 ## Project setup
 ```

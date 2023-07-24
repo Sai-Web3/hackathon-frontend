@@ -38,7 +38,7 @@ export default {
   },
   async mounted() {
     if (window.ethereum) {
-      this.walletAddress = await this.getAccount()
+      this.walletAddress = await this.$store.dispatch('getAccount');
       if(this.walletAddress != this.$store.state.walletAddress) {
         this.$router.push("/");
       }
@@ -48,25 +48,15 @@ export default {
     await this.initialize();
   },
   methods: {
-    getAccount: async function() {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      return accounts[0];
-    },
-
     initialize: async function() {
 
       this.job_id = this.$route.params.job_id;
 
-      let res;
       try {
-        res = await this.apiGetJobDetail(this.job_id);
+        const res = await this.apiGetJobDetail(this.job_id);
         this.job = res.data?.job || {};
-
       } catch (error) {
         this.$log.error(error);
-        return;
       }
     },
 

@@ -60,25 +60,6 @@ const routes = [
     ],
   },
 
-  // match
-  {
-    path: '/match',
-    name: '',
-    component: () => import('../views/Template.vue'),
-    children: [
-      {
-        path: 'search',
-        name: 'MatchSearch',
-        component: () => import('../views/Match/Search.vue'),
-      },
-      {
-        path: 'detail/:sbt_id',
-        name: 'MatchDetail',
-        component: () => import('../views/Match/Detail.vue'),
-      },
-    ],
-  },
-
   // looking
   {
     path: '/looking',

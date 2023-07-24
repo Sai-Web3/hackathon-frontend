@@ -3,7 +3,13 @@
 
     <h1 class="heading">Looking for Buddies</h1>
 
-    <div class="bg-white p-4">
+    <div class="bg-white p-4" :class="{ 'hide': isConfirmation }">
+
+      <div class="row">
+        <div class="col-6">
+          <div class="" @click="$router.go(-1)" style="cursor: pointer;"><i class="fa-solid fa-arrow-left"></i></div>
+        </div>
+      </div>
 
       <div class="form-group">
         <label>Title</label>
@@ -21,14 +27,19 @@
 
     </div>
 
+    <div class="loading_box" :class="{ 'hide': !isConfirmation }">
+      <div ref="loading_image" class="image"></div>
+    </div>
+
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import lottie from 'lottie-web';
 
 export default {
-  name: 'SbtDetail',
+  name: 'LookingBuddyCreate',
   components: {
   },
   data: () => ({
@@ -42,7 +53,7 @@ export default {
   },
   async mounted() {
     if (window.ethereum) {
-      this.walletAddress = await this.getAccount()
+      this.walletAddress = await this.$store.dispatch('getAccount');
       if(this.walletAddress != this.$store.state.walletAddress) {
         this.$router.push("/");
       }
@@ -50,33 +61,38 @@ export default {
       this.$router.push("/");
     }
     await this.initialize();
+    this.loadAnimation();
   },
   methods: {
-    getAccount: async function() {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      return accounts[0];
-    },
-
-    initialize: async function() {
+    async initialize() {
       this.sbt_id = this.$route.params.sbt_id;
     },
-
-    generate: async function() {
-      let res;
+    async generate() {
+      this.formSubmitted = true;
+      if(!this.title || !this.input_text) return;
       this.isConfirmation = true;
       try {
-        res = await this.apiPostJobCreate(this.$store.state.sbt_id, this.title, this.input_text);
+        const res = await this.apiPostJobCreate(this.$store.state.sbt_id, this.title, this.input_text);
         if(res.data?.status) {
           this.$store.commit("setLookingBuddyRecommendSkills", res.data?.recommend_skills);
           this.$router.push("/looking/buddy/check/"+res.data.job_id);
         }
+        this.isConfirmation = false;
       } catch (error) {
         this.$log.error(error);
         this.isConfirmation = false;
-        return;
       }
+    },
+
+    loadAnimation() {
+      const loadingImageData = require('@/assets/json/loading.json');
+      lottie.loadAnimation({
+        container: this.$refs.loading_image,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        animationData: loadingImageData,
+      });
     },
 
   },

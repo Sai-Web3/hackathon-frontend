@@ -3,7 +3,7 @@
 
     <h1 class="heading">Looking for Buddies</h1>
 
-    <div class="bg-white p-4">
+    <div class="bg-white p-4" :class="{ 'hide': isConfirmation }">
 
       <div class="row">
         <div class="col-4" v-for="(recommend, index) in recommends" :key="index" v-if="recommend.point > 0">
@@ -30,14 +30,19 @@
 
     </div>
 
+    <div class="loading_box" :class="{ 'hide': !isConfirmation }">
+      <div ref="loading_image" class="image"></div>
+    </div>
+
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import lottie from 'lottie-web';
 
 export default {
-  name: 'SbtDetail',
+  name: 'LookingBuddyOffer',
   components: {
   },
   data: () => ({
@@ -53,7 +58,7 @@ export default {
   },
   async mounted() {
     if (window.ethereum) {
-      this.walletAddress = await this.getAccount()
+      this.walletAddress = await this.$store.dispatch('getAccount');
       if(this.walletAddress != this.$store.state.walletAddress) {
         this.$router.push("/");
       }
@@ -61,15 +66,9 @@ export default {
       this.$router.push("/");
     }
     await this.initialize();
+    this.loadAnimation();
   },
   methods: {
-    getAccount: async function() {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      return accounts[0];
-    },
-
     initialize: async function() {
       this.job_id = this.$route.params.job_id;
       this.recommends = this.$store.state.looking_buddy_recommends;
@@ -79,19 +78,30 @@ export default {
     },
 
     confirm: async function() {
-      let res;
       this.isConfirmation = true;
       try {
-        res = await this.apiPostJobOffer(this.job_id, this.looking_sbt_ids);
+        const res = await this.apiPostJobOffer(this.job_id, this.looking_sbt_ids);
         if(res.data?.status) {
           this.$router.push("/sbt/detail/"+this.$store.state.sbt_id);
         }
+        this.isConfirmation = false;
       } catch (error) {
         this.$log.error(error);
         this.isConfirmation = false;
-        return;
       }
     },
+
+    loadAnimation() {
+      const loadingImageData = require('@/assets/json/loading.json');
+      lottie.loadAnimation({
+        container: this.$refs.loading_image,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        animationData: loadingImageData,
+      });
+    },
+
 
   },
 }

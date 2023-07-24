@@ -160,7 +160,7 @@ import Web3 from "web3";
 import lottie from 'lottie-web';
 
 export default {
-  name: 'Home',
+  name: 'InitialAi',
   components: {
   },
   data: () => ({
@@ -207,7 +207,7 @@ export default {
   },
   async mounted() {
     if (window.ethereum) {
-      this.walletAddress = await this.getAccount()
+      this.walletAddress = await this.$store.dispatch('getAccount');
       if(this.walletAddress != this.$store.state.walletAddress) {
         this.$router.push("/");
       }
@@ -217,14 +217,6 @@ export default {
     this.loadAnimation();
   },
   methods: {
-
-    getAccount: async function() {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      return accounts[0];
-    },
-
     analysis: async function() {
       let res;
       this.isConfirmation = true;

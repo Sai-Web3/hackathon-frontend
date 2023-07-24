@@ -72,6 +72,15 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    async getAccount({ commit }) {
+      if (window.ethereum) {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        return accounts[0];
+      }
+    },
+    
   },
   modules: {},
   plugins,

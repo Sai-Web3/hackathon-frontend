@@ -1,7 +1,6 @@
 <template>
   <div class="content">
     <div class="mypage_box">
-
       <h1 class="heading">This is Your Skill Element!</h1>
 
       <div class="text-center">
@@ -24,55 +23,46 @@
 </template>
 
 <script>
-// @ is an alias to /src
-
 export default {
   name: 'Mypage',
-  components: {
-  },
-  data: () => ({
-    walletAddress: null,
-    sbt_id: -1,
-    skills: [],
-  }),
-  computed: {
+  data() {
+    return {
+      walletAddress: null,
+      sbt_id: -1,
+      skills: [],
+    };
   },
   async mounted() {
-    if (window.ethereum) {
-      this.walletAddress = await this.getAccount()
-      if(this.walletAddress != this.$store.state.walletAddress) {
-        this.$router.push("/");
+    try {
+      if (window.ethereum) {
+        this.walletAddress = await this.getAccount()
+        if(this.walletAddress !== this.$store.state.walletAddress) {
+          this.redirectToHomePage();
+        }
+      } else {
+        this.redirectToHomePage();
       }
-    } else {
-      this.$router.push("/");
+      await this.initialize();
+    } catch (error) {
+      this.$log.error(error);
     }
-    await this.initialize();
   },
   methods: {
-
     getAccount: async function() {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
       return accounts[0];
     },
-
+    redirectToHomePage() {
+      this.$router.push("/");
+    },
     initialize: async function() {
-      let res;
-      try {
-        res = await this.apiGetSbtAccount(this.walletAddress);
-        this.sbt_id = res.data?.sbt_id;
-        this.skills = res.data?.data || "";
-
-        if(this.sbt_id == -1) {
-          this.$router.push("/initial");
-        }
-      } catch (error) {
-        this.$log.error(error);
-        return;
+      const { data } = await this.apiGetSbtAccount(this.walletAddress);
+      this.sbt_id = data?.sbt_id;
+      this.skills = data?.data || "";
+      if(this.sbt_id === -1) {
+        this.$router.push("/initial");
       }
     },
-
   },
 }
 </script>

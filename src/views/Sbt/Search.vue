@@ -12,7 +12,7 @@
 // @ is an alias to /src
 
 export default {
-  name: 'Mypage',
+  name: 'SbtSearch',
   components: {
   },
   data: () => ({

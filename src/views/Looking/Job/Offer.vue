@@ -3,7 +3,7 @@
 
     <h1 class="heading">Looking for Jobs</h1>
 
-    <div class="bg-white p-4">
+    <div class="bg-white p-4" :class="{ 'hide': isConfirmation }">
 
       <div class="row">
         <div class="col-4" v-for="(recommend, index) in recommends" :key="index">
@@ -30,14 +30,19 @@
 
     </div>
 
+    <div class="loading_box" :class="{ 'hide': !isConfirmation }">
+      <div ref="loading_image" class="image"></div>
+    </div>
+
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import lottie from 'lottie-web';
 
 export default {
-  name: 'SbtDetail',
+  name: 'LookingJobOffer',
   components: {
   },
   data: () => ({
@@ -53,7 +58,7 @@ export default {
   },
   async mounted() {
     if (window.ethereum) {
-      this.walletAddress = await this.getAccount()
+      this.walletAddress = await this.$store.dispatch('getAccount');
       if(this.walletAddress != this.$store.state.walletAddress) {
         this.$router.push("/");
       }
@@ -61,15 +66,9 @@ export default {
       this.$router.push("/");
     }
     await this.initialize();
+    this.loadAnimation();
   },
   methods: {
-    getAccount: async function() {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      return accounts[0];
-    },
-
     initialize: async function() {
       this.recommends = this.$store.state.looking_job_recommends;
       this.skills = this.$store.state.looking_job_skills;
@@ -90,6 +89,17 @@ export default {
         this.isConfirmation = false;
         return;
       }
+    },
+
+    loadAnimation() {
+      const loadingImageData = require('@/assets/json/loading.json');
+      lottie.loadAnimation({
+        container: this.$refs.loading_image,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        animationData: loadingImageData,
+      });
     },
 
   },
