@@ -6,15 +6,15 @@
     <div class="bg-white p-4">
 
       <div class="row">
-        <div class="col-4">
-          <div>サンプルネーム</div>
-          <div>50%</div>
-          <div>
-            <ul>
-              <li>Research Skills</li>
-              <li>Analytical Skills</li>
-              <li>Sort Algorithms</li>
-            </ul>
+        <div class="col-4" v-for="(recommend, index) in recommends" :key="index" v-if="recommend.point > 0">
+          <div class="border p-3 my-3">
+            <div>{{profiles[recommend.sbt_id] ?? "Undefined"}}</div>
+            <div class="text-center h1 my-3">{{recommend.point.toFixed(0)}}%</div>
+            <div>
+              <ul>
+                <li v-for="skill_id in recommend.skill_ids" :key="skill_id">{{skills[skill_id] ?? "Undefined"}}</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -43,6 +43,9 @@ export default {
   data: () => ({
     walletAddress: null,
     job_id: -1,
+    recommends: [],
+    skills: {},
+    profiles: {},
     looking_sbt_ids: [],
     isConfirmation: false,
   }),
@@ -69,6 +72,9 @@ export default {
 
     initialize: async function() {
       this.job_id = this.$route.params.job_id;
+      this.recommends = this.$store.state.looking_buddy_recommends;
+      this.skills = this.$store.state.looking_buddy_skills;
+      this.profiles = this.$store.state.looking_buddy_profiles;
       this.looking_sbt_ids = this.$store.state.looking_sbt_ids;
     },
 

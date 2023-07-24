@@ -8,12 +8,12 @@
       <div class="" @click="$router.go(-1)" style="cursor: pointer;"><i class="fa-solid fa-arrow-left"></i></div>
 
       <div class="form-group">
-        <label>Title</label>
+        <strong>Title</strong>
         <div class="">{{job.title ?? ""}}</div>
       </div>
 
       <div class="form-group">
-        <label>Job Description</label>
+        <strong>Job Description</strong>
         <div class="">{{job.input_text ?? ""}}</div>
       </div>
 

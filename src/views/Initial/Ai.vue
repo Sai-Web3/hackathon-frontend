@@ -42,6 +42,18 @@
 
         <div class="chat_box">
           <div class="chat_ai">
+            Your comment
+          </div>
+        </div>
+
+        <div class="chat_box">
+          <div class="input_user">
+            <input type="text" class="form-control" v-model="inputs.comment" placeholder="" />
+          </div>
+        </div>
+
+        <div class="chat_box">
+          <div class="chat_ai">
             Please tell me the work period above
           </div>
         </div>
@@ -128,12 +140,6 @@
       </div>
 
       <div class="form-group text-center">
-        <div>If you are only looking for buddies<br/>you can skip visualizing skill for now.</div>
-        <div class="mint_button d-block" @click="skip">Skip</div>
-      </div>
-
-
-      <div class="form-group text-center">
         <div class="mint_button d-block" @click="analysis">Proceed to SBT Generation</div>
       </div>
 
@@ -161,6 +167,7 @@ export default {
     walletAddress: null,
     inputs: {
       name: "",
+      comment: "",
       kind: "",
       reponsibility: '',
       roll: '',
@@ -190,6 +197,7 @@ export default {
     analyzeParams() {
       const analyzeParams = {
         name: this.inputs.name,
+        comment: this.inputs.comment,
         input_text: "What kind of company was it?:" + "\r\n" + this.inputs.kind + "\r\n\r\n" + "What were your main responsibilities, the goals and accomplishments to be achieved, and the challenges and difficulties you faced in doing so? And how did you deal with those difficulties?:" + "\r\n" + this.inputs.reponsibility + "\r\n\r\n" + "What was your roll in your team?:" + "\r\n" + this.inputs.roll,
         started_at: this.inputs.started_year + "-" + this.inputs.started_month,
         finished_at: this.inputs.finished_year + "-" + this.inputs.finished_month,
@@ -287,6 +295,7 @@ export default {
         const sbt_id = await this.confirmation();
 
         if(sbt_id != -1) {
+          this.$store.commit("setSbtId", sbt_id);
           break;
         }
 

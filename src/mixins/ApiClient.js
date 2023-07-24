@@ -92,9 +92,9 @@ export default Vue.mixin({
       const path = `sbt/detail/`+sbt_id;
       return await this.apiGet(path);
     },
-    async apiGetJob() {
+    async apiGetJob(sbt_id) {
       const path = `job`;
-      return await this.apiGet(path);
+      return await this.apiGet(path, {sbt_id: sbt_id});
     },
     async apiGetJobDetail(job_id) {
       const path = `job/detail/`+job_id;
@@ -102,6 +102,10 @@ export default Vue.mixin({
     },
     async apiGetJobCheck(job_id) {
       const path = `job/check/`+job_id;
+      return await this.apiGet(path);
+    },
+    async apiGetJobRecommend(job_id) {
+      const path = `job/recommend/`+job_id;
       return await this.apiGet(path);
     },
 
@@ -130,9 +134,9 @@ export default Vue.mixin({
       const path = `job/application`;
       return await this.apiPost(path, {sbt_id: sbt_id, job_ids: job_ids});
     },
-    async apiPostProfileUpdate(sbt_id, name, description) {
+    async apiPostProfileUpdate(sbt_id, name, comment) {
       const path = `sbt/profile/update/`+sbt_id;
-      return await this.apiPost(path, {sbt_id: sbt_id, name: name, description: description});
+      return await this.apiPost(path, {sbt_id: sbt_id, name: name, comment: comment});
     },
 
     // common

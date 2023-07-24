@@ -69,6 +69,7 @@ export default {
       try {
         res = await this.apiPostJobCreate(this.$store.state.sbt_id, this.title, this.input_text);
         if(res.data?.status) {
+          this.$store.commit("setLookingBuddyRecommendSkills", res.data?.recommend_skills);
           this.$router.push("/looking/buddy/check/"+res.data.job_id);
         }
       } catch (error) {

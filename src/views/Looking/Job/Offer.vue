@@ -6,15 +6,15 @@
     <div class="bg-white p-4">
 
       <div class="row">
-        <div class="col-4" v-for="(job, index) in jobs" :key="index">
-          <div>{{job.title}}</div>
-          <div>50%</div>
-          <div>
-            <ul>
-              <li>Research Skills</li>
-              <li>Analytical Skills</li>
-              <li>Sort Algorithms</li>
-            </ul>
+        <div class="col-4" v-for="(recommend, index) in recommends" :key="index">
+          <div class="border p-3 my-3">
+            <div>{{jobs[recommend.job_id] ?? "Undefined"}}</div>
+            <div class="text-center h1 my-3">{{recommend.point.toFixed(0)}}%</div>
+            <div>
+              <ul>
+                <li v-for="skill_id in recommend.skill_ids" :key="skill_id">{{skills[skill_id] ?? "Undefined"}}</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -43,8 +43,10 @@ export default {
   data: () => ({
     walletAddress: null,
     sbt_id: -1,
+    recommends: [],
+    skills: {},
+    jobs: {},
     looking_job_ids: [],
-    jobs: [],
     isConfirmation: false,
   }),
   computed: {
@@ -69,16 +71,10 @@ export default {
     },
 
     initialize: async function() {
+      this.recommends = this.$store.state.looking_job_recommends;
+      this.skills = this.$store.state.looking_job_skills;
+      this.jobs = this.$store.state.looking_job_jobs;
       this.looking_job_ids = this.$store.state.looking_job_ids;
-
-      let res;
-      try {
-        res = await this.apiPostJob(this.looking_job_ids);
-        this.jobs = res.data?.jobs || [];
-      } catch (error) {
-        this.$log.error(error);
-        return;
-      }
     },
 
     confirm: async function() {

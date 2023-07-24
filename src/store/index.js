@@ -20,7 +20,15 @@ export default new Vuex.Store({
 
     looking_job_ids: [],
     looking_sbt_ids: [],
-    looking_recommends: [],
+
+    looking_job_recommends: [],
+    looking_job_skills: {},
+    looking_job_jobs: {},
+
+    looking_buddy_recommend_skills: [],
+    looking_buddy_recommends: [],
+    looking_buddy_skills: {},
+    looking_buddy_profiles: {},
 
   },
   getters: {
@@ -41,8 +49,26 @@ export default new Vuex.Store({
     setLookingSbtIds(state, looking_sbt_ids) {
       state.looking_sbt_ids = looking_sbt_ids;
     },
-    setLookingRecommends(state, looking_recommends) {
-      state.looking_recommends = looking_recommends;
+    setLookingBuddyRecommendSkills(state, looking_buddy_recommend_skills) {
+      state.looking_buddy_recommend_skills = looking_buddy_recommend_skills;
+    },
+    setLookingBuddyRecommends(state, looking_buddy_recommends) {
+      state.looking_buddy_recommends = looking_buddy_recommends;
+    },
+    setLookingBuddySkills(state, looking_buddy_skills) {
+      state.looking_buddy_skills = looking_buddy_skills;
+    },
+    setLookingBuddyProfiles(state, looking_buddy_profiles) {
+      state.looking_buddy_profiles = looking_buddy_profiles;
+    },
+    setLookingJobRecommends(state, looking_job_recommends) {
+      state.looking_job_recommends = looking_job_recommends;
+    },
+    setLookingJobSkills(state, looking_job_skills) {
+      state.looking_job_skills = looking_job_skills;
+    },
+    setLookingJobJobs(state, looking_job_jobs) {
+      state.looking_job_jobs = looking_job_jobs;
     },
   },
   actions: {

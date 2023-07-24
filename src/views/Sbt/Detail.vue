@@ -20,8 +20,8 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th>Best SS</th>
-                  <th>Best HS</th>
+                  <th>Best Soft SKill</th>
+                  <th>Best Hard Skill</th>
                   <th>Reputation</th>
                 </tr>
               </thead>
@@ -43,13 +43,13 @@
             </table>
             <div class="my-3">
               <label>Name</label>
-              <input type="text" name="" class="form-control" v-model="name" :disabled="$store.state.sbt_id != sbt_id">
+              <input type="text" name="" class="form-control" v-model="profile.name" :disabled="$store.state.sbt_id != sbt_id">
             </div>
             <div class="my-3">
-              <label>Description</label>
-              <input type="text" name="" class="form-control" v-model="description" :disabled="$store.state.sbt_id != sbt_id">
+              <label>Comment</label>
+              <input type="text" name="" class="form-control" v-model="profile.comment" :disabled="$store.state.sbt_id != sbt_id">
             </div>
-            <div class="text-center mt-5">
+            <div class="text-center mt-5" v-if="$store.state.sbt_id == sbt_id" :class="{ 'hide': isLoading }">
               <button class="btn btn-primary" @click="update">Update</button>
             </div>
           </div>
@@ -187,9 +187,9 @@
             <div class="">
              <div class="row">
                <div class="col-4" v-for="(register_job, index) in register_jobs" :key="index">
-                  <div class="">
-                    <div class="">{{register_job.title}}</div>
-                    <div class=""><router-link :to="`/looking/job/detail/${register_job.id}`" class="btn btn-primary">Detail</router-link></div>
+                  <div class="border p-3 my-3">
+                    <div class="job_title">{{register_job.title}}</div>
+                    <div class="text-center mt-3"><router-link :to="`/looking/job/detail/${register_job.id}`" class="btn btn-primary">Detail</router-link></div>
                   </div>
                </div>
              </div> 
@@ -199,9 +199,9 @@
             <div class="">
              <div class="row">
                <div class="col-4" v-for="(application_job, index) in application_jobs" :key="index">
-                <div class="">
-                  <div class="">{{application_job.title}}</div>
-                    <div class=""><router-link :to="`/looking/job/detail/${application_job.id}`" class="btn btn-primary">Detail</router-link></div>
+                <div class="border p-3 my-3">
+                  <div class="job_title">{{application_job.title}}</div>
+                  <div class="text-center mt-3"><router-link :to="`/looking/job/detail/${application_job.id}`" class="btn btn-primary">Detail</router-link></div>
                 </div>
                </div>
              </div> 
@@ -211,9 +211,9 @@
             <div class="">
              <div class="row">
                <div class="col-4" v-for="(offer_sbt, index) in offer_sbts" :key="index">
-                  <div class="">
-                    <div class="">SBT ID: {{offer_sbt.sbt_id}}</div>
-                    <div class=""><span @click="link(offer_sbt.sbt_id)" class="btn btn-primary">Detail</span></div>
+                  <div class="border p-3 my-3">
+                    <div class="job_title">SBT ID: {{offer_sbt.sbt_id}}</div>
+                    <div class="text-center mt-3"><span @click="link(offer_sbt.sbt_id)" class="btn btn-primary">Detail</span></div>
                   </div>
                </div>
              </div> 
@@ -254,8 +254,11 @@ export default {
     register_jobs: [],
     application_jobs: [],
     offer_sbts: [],
-    name: "",
-    description: ""
+    profile: {
+      name: "",
+      comment: ""
+    },
+    isLoading: false,
   }),
   computed: {
   },
@@ -298,6 +301,7 @@ export default {
         this.register_jobs = res.data?.register_jobs || [];
         this.application_jobs = res.data?.application_jobs || [];
         this.offer_sbts = res.data?.offer_sbts || [];
+        this.profile = res.data?.profile || {};
 
         for(let index in skills) {
           if(skills[index].skill_type_id == 1) {
@@ -316,13 +320,14 @@ export default {
     },
 
     update: async function() {
-
       let res;
+      this.isLoading = true;
       try {
-        res = await this.apiPostUserUpdate(this.$store.state.sbt_id, this.name, this.description);
-
+        res = await this.apiPostProfileUpdate(this.$store.state.sbt_id, this.profile.name, this.profile.comment);
+        this.isLoading = false;
       } catch (error) {
         this.$log.error(error);
+        isLoading = false;
         return;
       }
     },

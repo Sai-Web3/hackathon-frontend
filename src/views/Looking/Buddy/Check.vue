@@ -5,7 +5,13 @@
 
     <div class="bg-white p-4">
 
-      <div class="border-bottom py-3 px-2" v-for="(skill, index) in skills" :key="index">
+      <div class="border-bottom py-3 px-2" v-for="(skill, index) in skills" :key="index" v-if="select_skill_ids.indexOf(skill.skill_id) >= 0">
+        <label class="">
+          <input type="checkbox" v-model="select_skill_ids" :value="skill.skill_id">
+          {{skill.skill_name}}
+        </label>
+      </div>
+      <div class="border-bottom py-3 px-2" v-for="(skill, index) in skills" :key="index" v-if="select_skill_ids.indexOf(skill.skill_id) < 0">
         <label class="">
           <input type="checkbox" v-model="select_skill_ids" :value="skill.skill_id">
           {{skill.skill_name}}
@@ -59,6 +65,7 @@ export default {
     initialize: async function() {
 
       this.job_id = this.$route.params.job_id;
+      this.select_skill_ids = this.$store.state.looking_buddy_recommend_skills;
 
       let res;
       try {
@@ -77,7 +84,6 @@ export default {
       try {
         res = await this.apiPostJobUpdate(this.job_id, this.select_skill_ids);
         if(res.data?.status) {
-          this.$store.commit("setLookingRecommends", res.data.recommends);
           this.$router.push("/looking/buddy/recommend/"+this.job_id);
         }
       } catch (error) {

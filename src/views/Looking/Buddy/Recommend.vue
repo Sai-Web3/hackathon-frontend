@@ -16,22 +16,22 @@
       </div>
 
       <div class="row">
-        <div class="col-4">
-          <div>サンプルネーム</div>
-          <div>50%</div>
-          <div>
-            <ul>
-              <li>Research Skills</li>
-              <li>Analytical Skills</li>
-              <li>Sort Algorithms</li>
-            </ul>
-          </div>
-          <div class="row">
-            <div class="col-6">
-              <router-link to="/sbt/detail/1" class="btn btn-primary">SBT詳細</router-link>
+        <div class="col-4" v-for="(recommend, index) in recommends" :key="index" v-if="recommend.point > 0">
+          <div class="border p-3 my-3">
+            <div>{{profiles[recommend.sbt_id] ?? "Undefined"}}</div>
+            <div class="text-center h1 my-3">{{recommend.point.toFixed(0)}}%</div>
+            <div>
+              <ul >
+                <li v-for="skill_id in recommend.skill_ids" :key="skill_id">{{skills[skill_id] ?? "Undefined"}}</li>
+              </ul>
             </div>
-            <div class="col-6">
-              <input type="checkbox" value="1" v-model="select_sbt_ids" style="margin: 5px 0 0;;">
+            <div class="row">
+              <div class="col-6">
+                <router-link :to="`/looking/job/detail/${recommend.sbt_id}`" class="btn btn-primary">Detail</router-link>
+              </div>
+              <div class="col-6 text-end">
+                <input type="checkbox" :value="recommend.sbt_id" v-model="select_sbt_ids" style="margin: 5px 0 0;;">
+              </div>
             </div>
           </div>
         </div>
@@ -53,6 +53,8 @@ export default {
     walletAddress: null,
     job_id: -1,
     recommends: [],
+    skills: {},
+    profiles: {},
     select_sbt_ids: [],
   }),
   computed: {
@@ -77,11 +79,37 @@ export default {
     },
 
     initialize: async function() {
+
       this.job_id = this.$route.params.job_id;
-      this.recommends = this.$store.state.recommends;
+
+      let res;
+      try {
+        res = await this.apiGetJobRecommend(this.job_id);
+        this.recommends = res.data?.recommends || [];
+        this.skills = res.data?.skills || {};
+        this.profiles = res.data?.profiles || {};
+        this.$store.commit("setLookingBuddySkills", this.skills);
+        this.$store.commit("setLookingBuddyProfiles", this.profiles);
+
+      } catch (error) {
+        this.$log.error(error);
+        return;
+      }
     },
 
     offer: async function() {
+
+      let recommends = [];
+
+      for(let i in this.select_sbt_ids) {
+        for(let j in this.recommends) {
+          if(this.select_sbt_ids[i] == this.recommends[j].sbt_id) {
+            recommends.push(this.recommends[j]);
+          }
+        }
+      }
+
+      this.$store.commit("setLookingBuddyRecommends", recommends);
       this.$store.commit("setLookingSbtIds", this.select_sbt_ids);
       this.$router.push("/looking/buddy/offer/"+this.job_id);
     },
